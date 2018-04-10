@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import info from './routes/info';
 import categories from './routes/categories';
 import questions from './routes/questions';
+import users from './routes/users';
 
 const app = express();
 app.disable('x-powered-by');
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use('/', info);
 app.use('/categories', categories);
 app.use('/questions', questions);
+app.use('/users', users);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
