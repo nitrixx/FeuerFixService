@@ -8,6 +8,8 @@ module.exports = {
     host: "127.0.0.1",
     dialect: "mysql",
     operatorsAliases: Sequelize.Op,
+    freezeTableName: true,
+    timestamps: false,
   },
   test: {
     username: "root",
@@ -16,6 +18,8 @@ module.exports = {
     host: "127.0.0.1",
     dialect: "mysql",
     operatorsAliases: Sequelize.Op,
+    freezeTableName: true,
+    timestamps: false,
   },
   production: {
     username: "root",
@@ -24,5 +28,7 @@ module.exports = {
     host: "127.0.0.1",
     dialect: "mysql",
     operatorsAliases: Sequelize.Op,
+    freezeTableName: true,
+    timestamps: false,
   }
 };
