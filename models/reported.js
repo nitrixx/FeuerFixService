@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     UserID: DataTypes.INTEGER,
     FragenID: DataTypes.INTEGER
-  }, {});
+  }, { freezeTableName: true, timestamps: false });
   reported.associate = function(models) {
     reported.belongsTo(models.users, {foreignKey: 'UserID'});
     reported.belongsTo(models.fragen, {foreignKey: 'FragenID'});
