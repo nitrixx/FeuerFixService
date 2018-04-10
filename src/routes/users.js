@@ -1,13 +1,13 @@
 import { Router } from 'express';
-// import { users, reported, UserBilder, statistics } from '../models'
+import { user, report, profilePicture, statistic } from '../models'
 
 const routes = Router();
 
 // This is for dev only!
-// routes.get('/', async (req, res) => {
-//   const usrs = await users.findAll({ include: [ UserBilder, statistics ] });
-//   res.json({ users: usrs });
-// });
+routes.get('/', async (req, res) => {
+  const users = await user.findAll({ include: [ profilePicture, statistic ] });
+  res.json({ users });
+});
 
 // This is for dev only!
 // returns the number of reported answered for a user
@@ -15,7 +15,7 @@ const routes = Router();
 //   const { params: { uId: UserID } } = req;
 
 //   try {
-//     const reportedAnsweres = await reported.findAll({ where: { UserID } });
+//     const reportedAnsweres = await report.findAll({ where: { UserID } });
 //     if (reportedAnsweres) {
 //       res.json({ reportedAnsweres: reportedAnsweres.length });
 //     } else {

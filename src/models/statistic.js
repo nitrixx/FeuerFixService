@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var statistics = sequelize.define('statistics', {
+  var statistic = sequelize.define('statistic', {
     UserID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -17,9 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     tableName: 'statistic_user_fachgebiete',
   });
-  statistics.associate = function(models) {
-    statistics.belongsTo(models.users, { foreignKey: 'UserID' });
-    statistics.belongsTo(models.fachgebiete, { foreignKey: 'FachgebietID' });
+  statistic.associate = function(models) {
+    statistic.belongsTo(models.user, { foreignKey: 'UserID' });
+    statistic.belongsTo(models.category, { foreignKey: 'FachgebietID' });
   };
-  return statistics;
+  return statistic;
 };
