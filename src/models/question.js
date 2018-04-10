@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var frage = sequelize.define('frage', {
+  var question = sequelize.define('question', {
     FragenID: {
       type:DataTypes.INTEGER,
       primaryKey: true,
@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     tableName: 'fragen',
   });
-  frage.associate = function(models) {
-    frage.belongsTo(models.category, {foreignKey: 'FachgebietID'});
-    frage.belongsToMany(models.users, { through: 'reported', foreignKey: 'FragenID' });
+  question.associate = function(models) {
+    question.belongsTo(models.category, {foreignKey: 'FachgebietID'});
+    question.belongsToMany(models.users, { through: 'reported', foreignKey: 'FragenID' });
   };
-  return frage;
+  return question;
 };

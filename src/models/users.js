@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     enabled: DataTypes.BOOLEAN
   }, { freezeTableName: true, timestamps: false });
   users.associate = function(models) {
-    users.belongsToMany(models.frage, { through: 'reported', foreignKey: 'UserID' });
+    users.belongsToMany(models.question, { through: 'reported', foreignKey: 'UserID' });
     users.hasOne(models.UserBilder, { foreignKey: 'UserID' });
     users.hasMany(models.statistics, { foreignKey: 'UserID' });
   };
