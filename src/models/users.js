@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   users.associate = function(models) {
     users.belongsToMany(models.fragen, { through: 'reported', foreignKey: 'UserID' });
     users.hasOne(models.UserBilder, { foreignKey: 'UserID' });
+    users.hasMany(models.statistics, { foreignKey: 'UserID' });
   };
   return users;
 };

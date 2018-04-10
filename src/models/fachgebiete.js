@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }, { freezeTableName: true, timestamps: false });
   fachgebiete.associate = function(models) {
     fachgebiete.hasMany(models.fragen, {foreignKey: 'FachgebietID'});
+    fachgebiete.hasMany(models.statistics, { foreignKey: 'FachgebietID' });
   };
   return fachgebiete;
 };
