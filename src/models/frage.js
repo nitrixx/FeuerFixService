@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'fragen',
   });
   frage.associate = function(models) {
-    frage.belongsTo(models.fachgebiet, {foreignKey: 'FachgebietID'});
+    frage.belongsTo(models.category, {foreignKey: 'FachgebietID'});
     frage.belongsToMany(models.users, { through: 'reported', foreignKey: 'FragenID' });
   };
   return frage;

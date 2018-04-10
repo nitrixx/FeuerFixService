@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var fachgebiet = sequelize.define('fachgebiet', {
+  var category = sequelize.define('category', {
     FachgebietID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     tableName: 'fachgebiete',
   });
-  fachgebiet.associate = function(models) {
-    fachgebiet.hasMany(models.frage, {foreignKey: 'FachgebietID'});
-    fachgebiet.hasMany(models.statistics, { foreignKey: 'FachgebietID' });
+  category.associate = function(models) {
+    category.hasMany(models.frage, {foreignKey: 'FachgebietID'});
+    category.hasMany(models.statistics, { foreignKey: 'FachgebietID' });
   };
-  return fachgebiet;
+  return category;
 };

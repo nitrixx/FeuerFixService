@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   statistics.associate = function(models) {
     statistics.belongsTo(models.users, { foreignKey: 'UserID' });
-    statistics.belongsTo(models.fachgebiet, { foreignKey: 'FachgebietID' });
+    statistics.belongsTo(models.category, { foreignKey: 'FachgebietID' });
   };
   return statistics;
 };
