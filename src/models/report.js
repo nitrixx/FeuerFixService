@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'reported',
   });
   report.associate = function(models) {
-    report.belongsTo(models.users, {foreignKey: 'UserID'});
+    report.belongsTo(models.user, {foreignKey: 'UserID'});
     report.belongsTo(models.question, {foreignKey: 'FragenID'});
   };
   return report;

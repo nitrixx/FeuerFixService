@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'statistic_user_fachgebiete',
   });
   statistic.associate = function(models) {
-    statistic.belongsTo(models.users, { foreignKey: 'UserID' });
+    statistic.belongsTo(models.user, { foreignKey: 'UserID' });
     statistic.belongsTo(models.category, { foreignKey: 'FachgebietID' });
   };
   return statistic;

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var users = sequelize.define('users', {
+  var user = sequelize.define('user', {
     UserID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -14,11 +14,15 @@ module.exports = (sequelize, DataTypes) => {
     Nachname: DataTypes.STRING,
     is_Admin: DataTypes.BOOLEAN,
     enabled: DataTypes.BOOLEAN
-  }, { freezeTableName: true, timestamps: false });
-  users.associate = function(models) {
-    users.belongsToMany(models.question, { through: 'reported', foreignKey: 'UserID' });
-    users.hasOne(models.profilePicture, { foreignKey: 'UserID' });
-    users.hasMany(models.statistic, { foreignKey: 'UserID' });
+  }, {
+    freezeTableName: true,
+    timestamps: false,
+    tableName: 'users',
+  });
+  user.associate = function(models) {
+    user.belongsToMany(models.question, { through: 'reported', foreignKey: 'UserID' });
+    user.hasOne(models.profilePicture, { foreignKey: 'UserID' });
+    user.hasMany(models.statistic, { foreignKey: 'UserID' });
   };
-  return users;
+  return user;
 };
