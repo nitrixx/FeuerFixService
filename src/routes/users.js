@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { user, report, profilePicture, statistic } from '../models'
+// import { user, report, profilePicture, statistic } from '../models'
 
 const routes = Router();
 
 // This is for dev only!
-routes.get('/', async (req, res) => {
-  const users = await user.findAll({ include: [ profilePicture, statistic ] });
-  res.json({ users });
-});
+// routes.get('/', async (req, res) => {
+//   const users = await user.findAll({ include: [ profilePicture, statistic ] });
+//   res.json({ users });
+// });
 
 // This is for dev only!
 // returns the number of reported answered for a user
