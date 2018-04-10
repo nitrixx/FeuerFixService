@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }, { freezeTableName: true, timestamps: false });
   reported.associate = function(models) {
     reported.belongsTo(models.users, {foreignKey: 'UserID'});
-    reported.belongsTo(models.fragen, {foreignKey: 'FragenID'});
+    reported.belongsTo(models.frage, {foreignKey: 'FragenID'});
   };
   return reported;
 };

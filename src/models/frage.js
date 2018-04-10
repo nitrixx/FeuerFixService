@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var fragen = sequelize.define('fragen', {
+  var frage = sequelize.define('frage', {
     FragenID: {
       type:DataTypes.INTEGER,
       primaryKey: true,
@@ -13,10 +13,14 @@ module.exports = (sequelize, DataTypes) => {
     Antwort_C: DataTypes.STRING,
     richtige_antwort: DataTypes.STRING,
     version: DataTypes.STRING
-  }, { freezeTableName: true, timestamps: false, });
-  fragen.associate = function(models) {
-    fragen.belongsTo(models.fachgebiet, {foreignKey: 'FachgebietID'});
-    fragen.belongsToMany(models.users, { through: 'reported', foreignKey: 'FragenID' });
+  }, {
+    freezeTableName: true,
+    timestamps: false,
+    tableName: 'fragen',
+  });
+  frage.associate = function(models) {
+    frage.belongsTo(models.fachgebiet, {foreignKey: 'FachgebietID'});
+    frage.belongsToMany(models.users, { through: 'reported', foreignKey: 'FragenID' });
   };
-  return fragen;
+  return frage;
 };
