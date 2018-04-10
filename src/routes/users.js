@@ -1,11 +1,11 @@
 import { Router } from 'express';
-// import { users, reported } from '../../models'
+// import { users, reported, UserBilder } from '../../models'
 
 const routes = Router();
 
 // This is for dev only!
 // routes.get('/', async (req, res) => {
-//   const usrs = await users.findAll({});
+//   const usrs = await users.findAll({ include: [ UserBilder ] });
 //   res.json({ users: usrs });
 // });
 
@@ -26,6 +26,12 @@ const routes = Router();
 //   } catch(e) {
 //     return next(e);
 //   }
+// });
+
+// This is for dev only!
+// routes.get('/pictures', async (req, res) => {
+//   const pictures = await UserBilder.findAll({});
+//   res.json({ pictures });
 // });
 
 export default routes;
