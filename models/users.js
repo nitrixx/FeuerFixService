@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     enabled: DataTypes.BOOLEAN
   }, { freezeTableName: true, timestamps: false });
   users.associate = function(models) {
-    // associations can be defined here
+    users.belongsToMany(models.fragen, { through: 'reported', foreignKey: 'UserID' });
   };
   return users;
 };
