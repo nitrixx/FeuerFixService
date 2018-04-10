@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { fachgebiete } from "../models";
+import { fachgebiet } from "../models";
 
 const routes = Router();
 
 routes.get('/', async (req, res) => {
-  const categories = await fachgebiete.findAll();
+  const categories = await fachgebiet.findAll();
   res.json({ categories });
 });
 
@@ -12,7 +12,7 @@ routes.get('/:id', async (req, res, next) => {
   const { params: { id } } = req;
 
   try {
-    const category = await fachgebiete.findById(id);
+    const category = await fachgebiet.findById(id);
     if(!category) {
       let err = new Error(`Category with id ${id} not found.`);
       err.status = 404;

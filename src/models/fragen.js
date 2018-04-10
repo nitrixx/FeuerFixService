@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     version: DataTypes.STRING
   }, { freezeTableName: true, timestamps: false, });
   fragen.associate = function(models) {
-    fragen.belongsTo(models.fachgebiete, {foreignKey: 'FachgebietID'});
+    fragen.belongsTo(models.fachgebiet, {foreignKey: 'FachgebietID'});
     fragen.belongsToMany(models.users, { through: 'reported', foreignKey: 'FragenID' });
   };
   return fragen;
