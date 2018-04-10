@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { fachgebiete } from "../../models";
+import { fachgebiete } from "../models";
 
 const routes = Router();
 

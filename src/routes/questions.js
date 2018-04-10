@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { fragen } from '../../models'
+import { fragen } from '../models'
 
 const routes = Router();
 
