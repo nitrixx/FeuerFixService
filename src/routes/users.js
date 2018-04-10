@@ -1,5 +1,5 @@
 import { Router } from 'express';
-// import { users, reported, UserBilder, statistics } from '../models'
+// import { users, report, UserBilder, statistics } from '../models'
 
 const routes = Router();
 
@@ -15,7 +15,7 @@ const routes = Router();
 //   const { params: { uId: UserID } } = req;
 
 //   try {
-//     const reportedAnsweres = await reported.findAll({ where: { UserID } });
+//     const reportedAnsweres = await report.findAll({ where: { UserID } });
 //     if (reportedAnsweres) {
 //       res.json({ reportedAnsweres: reportedAnsweres.length });
 //     } else {
