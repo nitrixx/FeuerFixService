@@ -1,37 +1,11 @@
 import { Router } from 'express';
-// import { user, report, profilePicture, statistic } from '../models'
+import { User } from '../models'
 
 const routes = Router();
 
-// This is for dev only!
-// routes.get('/', async (req, res) => {
-//   const users = await user.findAll({ include: [ profilePicture, statistic ] });
-//   res.json({ users });
-// });
-
-// This is for dev only!
-// returns the number of reported answered for a user
-// routes.get('/:uId', async (req, res, next) => {
-//   const { params: { uId: UserID } } = req;
-
-//   try {
-//     const reportedAnsweres = await report.findAll({ where: { UserID } });
-//     if (reportedAnsweres) {
-//       res.json({ reportedAnsweres: reportedAnsweres.length });
-//     } else {
-//       let err = new Error('Probably no user with this id found..');
-//       err.status = 404;
-//       return next(err);
-//     }
-//   } catch(e) {
-//     return next(e);
-//   }
-// });
-
-// This is for dev only!
-// routes.get('/pictures', async (req, res) => {
-//   const pictures = await UserBilder.findAll({});
-//   res.json({ pictures });
-// });
+routes.get('/', async (req, res) => {
+  const users = await User.findAll({});
+  res.json({ users });
+})
 
 export default routes;
