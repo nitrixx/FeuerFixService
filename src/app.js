@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
+import jwt from 'express-jwt';
 
 // Route importing
 import info from './routes/info';
@@ -24,6 +25,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Middleware for serving static assets
 app.use(express.static(path.join(__dirname, '../public')));
+
+// Middleware for handling jwt authentication
+app.use(jwt({ secret: process.env.JWT_SECRET }).unless({ path: ['/register'] }));
 
 // Bind route handler to a route
 app.use('/', info);
