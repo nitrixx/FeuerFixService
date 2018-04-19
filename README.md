@@ -2,7 +2,7 @@
 
 ### What is this repository for? ###
 
-* Back-end f�r das 3FLP Projekt
+* Back-end für das 3FLP Projekt
 
 ### How do I get set up? ###
 
