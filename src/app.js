@@ -10,6 +10,7 @@ import categories from './routes/categories';
 import questions from './routes/questions';
 import users from './routes/users';
 import register from './routes/register';
+import login from './routes/login';
 
 const app = express();
 app.disable('x-powered-by');
@@ -27,7 +28,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Middleware for handling jwt authentication
-app.use(jwt({ secret: process.env.JWT_SECRET }).unless({ path: ['/', '/register'] }));
+app.use(jwt({ secret: process.env.JWT_SECRET }).unless({ path: [
+  '/',
+  '/register',
+  '/login',
+] }));
 
 // Bind route handler to a route
 app.use('/', info);
@@ -35,6 +40,7 @@ app.use('/categories', categories);
 app.use('/questions', questions);
 app.use('/users', users);
 app.use('/register', register);
+app.use('/login', login);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
