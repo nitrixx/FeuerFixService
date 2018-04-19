@@ -11,12 +11,17 @@ const ONEDAY = 24 * 60 * 60
 
 routes.post('/', validate({ body: loginSchema }) ,async (req, res, next) => {
   const loginFail = createError('Username or password wrong', 401);
+  const notEnabled = createError('Your account has to be activated by an administrator first.', 401);
   const { username, password } = req.body;
 
   const user = await User.findOne({ where: { username } });
 
   if (!user) {
     return next(loginFail);
+  }
+
+  if (!user.isEnabled) {
+    return next(notEnabled);
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
