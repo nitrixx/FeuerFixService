@@ -8,6 +8,7 @@ import info from './routes/info';
 import categories from './routes/categories';
 import questions from './routes/questions';
 import users from './routes/users';
+import register from './routes/register';
 
 const app = express();
 app.disable('x-powered-by');
@@ -29,6 +30,7 @@ app.use('/', info);
 app.use('/categories', categories);
 app.use('/questions', questions);
 app.use('/users', users);
+app.use('/register', register);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
