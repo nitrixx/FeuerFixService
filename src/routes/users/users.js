@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from 'express-jsonschema';
 import bCrypt from 'bcrypt';
 import { User } from '../../models';
-import { userSchema } from './schema';
+import { user as userSchema } from '../../schema';
 import { createError } from '../../util';
 
 const routes = Router();

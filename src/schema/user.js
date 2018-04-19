@@ -1,4 +1,4 @@
-const userSchema = {
+export default {
   type: 'Object',
   properties: {
     username: {
@@ -18,6 +18,4 @@ const userSchema = {
       required: true,
     }
   },
-}
-
-export { userSchema };
+};
