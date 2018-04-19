@@ -2,13 +2,13 @@
 
 ### What is this repository for? ###
 
-* Back-end für das 3FLP Projekt
+* This is the RESTful API for FeuerFix
 
 ### How do I get set up? ###
 
-* Projekt auschecken
-* im Projekt: npm install
-* danach: npm run dev
+* clone project and cd into it
+* npm install
+* npm run dev
 
 ### Who do I talk to? ###
 
