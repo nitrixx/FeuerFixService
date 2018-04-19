@@ -36,7 +36,7 @@ routes.post('/', validate({ body: loginSchema }) ,async (req, res, next) => {
     isAdmin: user.isAdmin,
   }, process.env.JWT_SECRET, { expiresIn: ONEDAY });
 
-  res.json({ token });
+  res.json({ id: user.id, token });
 
 });
 
