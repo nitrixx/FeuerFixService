@@ -37,11 +37,35 @@ app.use((req, res, next) => {
   next(err);
 });
 
-// Error handler
+// Error handler for schema validation failures
+app.use(function (err, req, res, next) {
+
+  // Handle only validation errors
+  // everything else gets passed to the default error handler
+  if (err.name === 'JsonSchemaValidation') {
+    res.status(400);
+    res.json({
+      statusText: 'Bad Request',
+      jsonSchemaValidation: true,
+      validations: err.validations  // All of your validation information
+    });
+  } else {
+    next(err);
+  }
+});
+
+// Default error handler
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  res
-    .status(err.status || 500)
-    .json({ message: err.message });
+  if (process.env.NODE_ENV === 'development') {
+    res
+      .status(err.status || 500)
+      .json({ message: err.message, trace: err.trace });
+  } else {
+    res
+      .status(err.status || 500)
+      .json({ message: err.message });
+  }
+
 });
 
 export default app;
