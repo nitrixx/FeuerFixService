@@ -7,3 +7,5 @@ routes.get('/', async (req, res) => {
   const users = await User.findAll({});
   res.json({ users });
 });
+
+export default routes;
