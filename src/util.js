@@ -1,3 +1,5 @@
+import bCrypt from 'bcrypt';
+
 export function createError(message, status) {
   let err = new Error(message);
   err.status = status || 500;
@@ -14,4 +16,8 @@ export function checkEnabledFlag(req, res, next) {
     return next(err);
   }
   return next();
+}
+
+export async function hashPassword(passwordToHash) {
+  return await bCrypt.hash(passwordToHash, 10);
 }

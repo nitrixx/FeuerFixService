@@ -1,9 +1,8 @@
 import { Router } from 'express';
 import { validate } from 'express-jsonschema';
-import bCrypt from 'bcrypt';
 import { User } from '../../models';
 import { user as userSchema } from '../../schema';
-import { createError } from '../../util';
+import { createError, hashPassword } from '../../util';
 
 const routes = Router();
 
@@ -22,7 +21,7 @@ routes.post('/', validate({ body: userSchema }) ,async (req, res, next) => {
   }
 
   // Created salted and hashed password
-  const hashedPassword = await bCrypt.hash(password, 10);
+  const hashedPassword = await hashPassword(password);
 
   // Create user
   const createdUser = await User.create({
