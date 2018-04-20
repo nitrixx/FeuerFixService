@@ -73,6 +73,7 @@ app.use(function (err, req, res, next) {
 // Default error handler
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   if (process.env.NODE_ENV === 'development') {
+    console.log(err); // eslint-disable-line no-console
     res
       .status(err.status || 500)
       .json({ message: err.message, trace: err.trace });
