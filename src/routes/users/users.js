@@ -3,12 +3,20 @@ import { User } from '../../models';
 import { validate } from 'express-jsonschema';
 import { userUpdate as userUpdateSchema } from '../../schema';
 import { createError, hashPassword } from '../../util';
-import { userNotFound, passwordsDoNotmatch } from '../../commonErrors';
+import { userNotFound, passwordsDoNotmatch, forbidden } from '../../commonErrors';
 
 const routes = Router();
 
-routes.get('/', async (req, res) => {
-  const users = await User.findAll({});
+routes.get('/', async (req, res, next) => {
+  const { isAdmin } = req.user;
+
+  if(!isAdmin) {
+    return next(forbidden);
+  }
+
+  const users = await User.findAll({
+    attributes: [ 'id', 'username', 'isAdmin', 'isEnabled' ],
+  });
   res.json({ users });
 });
 
