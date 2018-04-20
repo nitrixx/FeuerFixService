@@ -12,6 +12,19 @@ import {
 
 const routes = Router();
 
+routes.param('userId', async (req, res, next, userId) => {
+  const { id: requestingUserId, isAdmin } = req.user;
+
+  if (!isAdmin && parseInt(userId, 10) !== requestingUserId) {
+    return next(adminOrOwnerOnly);
+  }
+
+  req.dbUser = await User.findById(userId, {
+    attributes: [ 'id', 'username', 'name', 'isAdmin', 'isEnabled', 'createdAt', 'updatedAt' ],
+  });
+  return next();
+});
+
 routes.get('/', async (req, res, next) => {
   const { isAdmin } = req.user;
 
@@ -25,18 +38,8 @@ routes.get('/', async (req, res, next) => {
   res.json({ users });
 });
 
-routes.get('/:userId', async (req, res, next) => {
-  const { id: requestingUserId, isAdmin } = req.user;
-  const { userId } = req.params;
-
-  if (!isAdmin && parseInt(userId, 10) !== requestingUserId) {
-    return next(adminOrOwnerOnly);
-  }
-
-  const user = await User.findById(userId, {
-    attributes: [ 'id', 'username', 'name', 'isAdmin', 'isEnabled' ],
-  });
-
+routes.get('/:userId', async (req, res) => {
+  const { dbUser: user } = req;
   res.json(user);
 });
 
@@ -99,17 +102,9 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
   }
 });
 
-routes.delete('/:userId', async (req, res, next) => {
-  const { id: requestingUserId, isAdmin } = req.user;
-  const { userId } = req.params;
-
-  if (!isAdmin && parseInt(userId, 10) !== requestingUserId) {
-    return next(adminOrOwnerOnly);
-  }
-
-  const user = await User.findById(userId);
+routes.delete('/:userId', async (req, res) => {
+  const { dbUser: user, params: { userId } } = req;
   await user.destroy();
-
   res.json({ message: `Successfully deleted user with id ${userId}` });
 });
 
