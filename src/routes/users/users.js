@@ -2,8 +2,13 @@ import { Router } from 'express';
 import { User } from '../../models';
 import { validate } from 'express-jsonschema';
 import { userUpdate as userUpdateSchema } from '../../schema';
-import { createError, hashPassword } from '../../util';
-import { userNotFound, passwordsDoNotmatch, forbidden } from '../../commonErrors';
+import { hashPassword } from '../../util';
+import {
+  userNotFound,
+  passwordsDoNotmatch,
+  forbidden,
+  adminOrOwnerOnly,
+} from '../../commonErrors';
 
 const routes = Router();
 
@@ -20,6 +25,21 @@ routes.get('/', async (req, res, next) => {
   res.json({ users });
 });
 
+routes.get('/:userId', async (req, res, next) => {
+  const { id: requestingUserId, isAdmin } = req.user;
+  const { userId } = req.params;
+
+  if (!isAdmin && parseInt(userId, 10) !== requestingUserId) {
+    return next(adminOrOwnerOnly);
+  }
+
+  const user = await User.findById(userId, {
+    attributes: [ 'id', 'username', 'name', 'isAdmin', 'isEnabled' ],
+  });
+
+  res.json(user);
+});
+
 routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, next) => {
   const { userId: userIdToUpdate } = req.params;
   const { id: requestingUserId, isAdmin } = req.user;
@@ -33,7 +53,7 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
   try {
     // Only the admin or the owner can update a user
     if (!isAdmin && parseInt(userIdToUpdate, 10) !== requestingUserId) {
-      return next(createError('Only the admin or the owner can update this user', 401));
+      return next(adminOrOwnerOnly);
     }
 
     // Get the user model from the db
