@@ -19,10 +19,16 @@ routes.param('userId', async (req, res, next, userId) => {
     return next(adminOrOwnerOnly);
   }
 
-  req.dbUser = await User.findById(userId, {
+  const user = await User.findById(userId, {
     attributes: [ 'id', 'username', 'name', 'isAdmin', 'isEnabled', 'createdAt', 'updatedAt' ],
     include: [ Answer ],
   });
+
+  if(!user) {
+    return next(userNotFound);
+  }
+
+  req.dbUser = user;
   return next();
 });
 
