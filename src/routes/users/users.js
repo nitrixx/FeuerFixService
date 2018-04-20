@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { User } from '../../models';
+import { User, Answer, AnsweredQuestion } from '../../models';
 import { validate } from 'express-jsonschema';
 import { userUpdate as userUpdateSchema } from '../../schema';
 import { hashPassword } from '../../util';
@@ -21,6 +21,7 @@ routes.param('userId', async (req, res, next, userId) => {
 
   req.dbUser = await User.findById(userId, {
     attributes: [ 'id', 'username', 'name', 'isAdmin', 'isEnabled', 'createdAt', 'updatedAt' ],
+    include: [ Answer ],
   });
   return next();
 });
@@ -111,6 +112,17 @@ routes.delete('/:userId', async (req, res) => {
   const { dbUser: user, params: { userId } } = req;
   await user.destroy();
   res.json({ message: `Successfully deleted user with id ${userId}` });
+});
+
+routes.delete('/:userId/statistics', async (req, res, next) => {
+  const { userId: UserId } = req.params;
+  try {
+    const statistics = AnsweredQuestion.findAll({ where: { UserId } });
+    await statistics.map(async statistic => await statistic.destroy());
+    res.json({ message: 'Success' });
+  } catch(err) {
+    return next(err);
+  }
 });
 
 export default routes;
