@@ -1,14 +1,8 @@
 import { Router } from 'express';
-import { User, Answer, AnsweredQuestion } from '../../models';
 import { validate } from 'express-jsonschema';
 import { userUpdate as userUpdateSchema } from '../../schema';
-import { hashPassword } from '../../util';
-import {
-  userNotFound,
-  passwordsDoNotmatch,
-  forbidden,
-  adminOrOwnerOnly,
-} from '../../commonErrors';
+import { forbidden, adminOrOwnerOnly, } from '../../commonErrors';
+import { prefetchUser, getUserList, updateUser, deleteStatistics } from './handler';
 
 const routes = Router();
 
@@ -19,30 +13,24 @@ routes.param('userId', async (req, res, next, userId) => {
     return next(adminOrOwnerOnly);
   }
 
-  const user = await User.findById(userId, {
-    attributes: [ 'id', 'username', 'name', 'isAdmin', 'isEnabled', 'createdAt', 'updatedAt' ],
-    include: [ Answer ],
-  });
-
-  if(!user) {
-    return next(userNotFound);
+  try {
+    req.dbUser = await prefetchUser(userId);
+    return next();
+  } catch(err) {
+    return next(err);
   }
-
-  req.dbUser = user;
-  return next();
 });
 
 routes.get('/', async (req, res, next) => {
   const { isAdmin } = req.user;
+  if(!isAdmin) { return next(forbidden); }
 
-  if(!isAdmin) {
-    return next(forbidden);
+  try {
+    const users = await getUserList();
+    res.json({ users });
+  } catch (err) {
+    return next(err);
   }
-
-  const users = await User.findAll({
-    attributes: [ 'id', 'username', 'isAdmin', 'isEnabled' ],
-  });
-  res.json({ users });
 });
 
 routes.get('/:userId', async (req, res) => {
@@ -51,55 +39,11 @@ routes.get('/:userId', async (req, res) => {
 });
 
 routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, next) => {
-  const {
-    body: {
-      username = '',
-      name = '',
-      isEnabled = '',
-      newPassword = '',
-      confirmPassword = '',
-    },
-    dbUser,
-  } = req;
+  const { body, dbUser, } = req;
 
   try {
-
-    // Check if the password has to be updated
-    let shouldUpdatePassword = false;
-    let updatedPassword = '';
-    if (newPassword !== '') {
-      // Check that both passwords match
-      if (newPassword !== confirmPassword) {
-        return next(passwordsDoNotmatch);
-      }
-
-      shouldUpdatePassword = true;
-      updatedPassword = await hashPassword(newPassword);
-    }
-
-    // Update user model
-    const replyObj = {};
-    if (username !== '') {
-      dbUser.username = username;
-      replyObj.username = username;
-    }
-    if (name !== '') {
-      dbUser.name = name;
-      replyObj.name = name;
-    }
-    if(isEnabled !== '') {
-      dbUser.isEnabled = isEnabled;
-      replyObj.isEnabled = isEnabled;
-    }
-    if (shouldUpdatePassword) {
-      dbUser.password = updatedPassword;
-      replyObj.message = 'You successfully changed your password';
-    }
-
-    // Save the changes to the db
-    await dbUser.save();
-
-    res.json(replyObj);
+    const replyUser = await updateUser(body, dbUser);
+    res.json(replyUser);
   } catch (err) {
     return next(err);
   }
@@ -112,11 +56,10 @@ routes.delete('/:userId', async (req, res) => {
 });
 
 routes.delete('/:userId/statistics', async (req, res, next) => {
-  const { userId: UserId } = req.params;
+  const { userId } = req.params;
   try {
-    const statistics = AnsweredQuestion.findAll({ where: { UserId } });
-    await statistics.map(async statistic => await statistic.destroy());
-    res.json({ message: 'Success' });
+    const replyMsg = await deleteStatistics(userId);
+    res.json(replyMsg);
   } catch(err) {
     return next(err);
   }
