@@ -49,6 +49,7 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
   const {
     username = '',
     name = '',
+    isEnabled = '',
     newPassword = '',
     confirmPassword = '',
   } = req.body;
@@ -87,6 +88,10 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
     if (name !== '') {
       dbUser.name = name;
       replyObj.name = name;
+    }
+    if(isEnabled !== '') {
+      dbUser.isEnabled = isEnabled;
+      replyObj.isEnabled = isEnabled;
     }
     if (shouldUpdatePassword) {
       dbUser.password = updatedPassword;
