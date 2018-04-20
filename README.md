@@ -1,5 +1,7 @@
 # Flerschemer Firefighter Learning Program - FeuerFix Service #
 
+[![Build Status](https://travis-ci.com/Inventio93/FeuerFixService.svg?token=EzYfE5qpxed5ipLPkJXG&branch=master)](https://travis-ci.com/Inventio93/FeuerFixService)
+
 ### What is this repository for? ###
 
 * This is the RESTful API for FeuerFix
