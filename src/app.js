@@ -3,6 +3,7 @@ import path from 'path';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import jwt from 'express-jwt';
+import { checkEnabledFlag } from './util';
 
 // Route importing
 import info from './routes/info';
@@ -33,6 +34,9 @@ app.use(jwt({ secret: process.env.JWT_SECRET }).unless({ path: [
   '/register',
   '/login',
 ] }));
+
+// Middleware to check whether the requesting account is enabled
+app.use(checkEnabledFlag);
 
 // Bind route handler to a route
 app.use('/', info);
