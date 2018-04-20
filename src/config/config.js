@@ -11,11 +11,12 @@ module.exports = {
   },
   test: {
     username: "root",
-    password: null,
-    database: "database_test",
+    password: "123456",
+    database: "dev",
     host: "127.0.0.1",
     dialect: "mysql",
     operatorsAliases: Sequelize.Op,
+    logging: false,
   },
   production: {
     username: "root",
