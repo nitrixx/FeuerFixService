@@ -15,7 +15,7 @@
     "dev": "nodemon src/index.js --exec \"node -r dotenv/config -r babel-register\"",
     "clean": "rimraf dist",
     "build": "npm run clean && mkdir -p dist && babel src -s -D -d dist --source-maps",
-    "test": "export JWT_SECRET=123456 && jest --forceExit",
+    "test": "export JWT_SECRET=123456 && sequelize --config src/config/config.js --migrations-path src/migrations --models-path src/models db:migrate && jest --forceExit",
     "testDev": "export JWT_SECRET=123456 && jest --watch",
     "lint": "esw -w src test"
   },
@@ -45,7 +45,8 @@
     "morgan": "^1.9.0",
     "mysql2": "^1.5.3",
     "rimraf": "^2.6.2",
-    "sequelize": "^4.37.6"
+    "sequelize": "^4.37.6",
+    "sequelize-cli": "^4.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",
