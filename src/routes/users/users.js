@@ -2,14 +2,45 @@ import { Router } from 'express';
 import { User } from '../../models';
 import { validate } from 'express-jsonschema';
 import { userUpdate as userUpdateSchema } from '../../schema';
-import { createError, hashPassword } from '../../util';
-import { userNotFound, passwordsDoNotmatch } from '../../commonErrors';
+import { hashPassword } from '../../util';
+import {
+  userNotFound,
+  passwordsDoNotmatch,
+  forbidden,
+  adminOrOwnerOnly,
+} from '../../commonErrors';
 
 const routes = Router();
 
-routes.get('/', async (req, res) => {
-  const users = await User.findAll({});
+routes.param('userId', async (req, res, next, userId) => {
+  const { id: requestingUserId, isAdmin } = req.user;
+
+  if (!isAdmin && parseInt(userId, 10) !== requestingUserId) {
+    return next(adminOrOwnerOnly);
+  }
+
+  req.dbUser = await User.findById(userId, {
+    attributes: [ 'id', 'username', 'name', 'isAdmin', 'isEnabled', 'createdAt', 'updatedAt' ],
+  });
+  return next();
+});
+
+routes.get('/', async (req, res, next) => {
+  const { isAdmin } = req.user;
+
+  if(!isAdmin) {
+    return next(forbidden);
+  }
+
+  const users = await User.findAll({
+    attributes: [ 'id', 'username', 'isAdmin', 'isEnabled' ],
+  });
   res.json({ users });
+});
+
+routes.get('/:userId', async (req, res) => {
+  const { dbUser: user } = req;
+  res.json(user);
 });
 
 routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, next) => {
@@ -18,6 +49,7 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
   const {
     username = '',
     name = '',
+    isEnabled = '',
     newPassword = '',
     confirmPassword = '',
   } = req.body;
@@ -25,7 +57,7 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
   try {
     // Only the admin or the owner can update a user
     if (!isAdmin && parseInt(userIdToUpdate, 10) !== requestingUserId) {
-      return next(createError('Only the admin or the owner can update this user', 401));
+      return next(adminOrOwnerOnly);
     }
 
     // Get the user model from the db
@@ -57,6 +89,10 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
       dbUser.name = name;
       replyObj.name = name;
     }
+    if(isEnabled !== '') {
+      dbUser.isEnabled = isEnabled;
+      replyObj.isEnabled = isEnabled;
+    }
     if (shouldUpdatePassword) {
       dbUser.password = updatedPassword;
       replyObj.message = 'You successfully changed your password';
@@ -69,6 +105,12 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
   } catch (err) {
     return next(err);
   }
+});
+
+routes.delete('/:userId', async (req, res) => {
+  const { dbUser: user, params: { userId } } = req;
+  await user.destroy();
+  res.json({ message: `Successfully deleted user with id ${userId}` });
 });
 
 export default routes;
