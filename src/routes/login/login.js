@@ -5,13 +5,13 @@ import { validate } from 'express-jsonschema';
 import { login as loginSchema } from '../../schema';
 import { User } from '../../models';7
 import { createError } from '../../util';
+import { accountNotEnabled } from '../../commonErrors';
 
 const routes = Router();
 const ONEDAY = 24 * 60 * 60
 
 routes.post('/', validate({ body: loginSchema }) ,async (req, res, next) => {
   const loginFail = createError('Username or password wrong', 401);
-  const notEnabled = createError('Your account has to be activated by an administrator first.', 401);
   const { username, password } = req.body;
 
   const user = await User.findOne({ where: { username } });
@@ -21,7 +21,7 @@ routes.post('/', validate({ body: loginSchema }) ,async (req, res, next) => {
   }
 
   if (!user.isEnabled) {
-    return next(notEnabled);
+    return next(accountNotEnabled);
   }
 
   const isPasswordCorrect = await bcrypt.compare(password, user.password);

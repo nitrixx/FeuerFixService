@@ -3,6 +3,7 @@ import { User } from '../../models';
 import { validate } from 'express-jsonschema';
 import { userUpdate as userUpdateSchema } from '../../schema';
 import { createError, hashPassword } from '../../util';
+import { userNotFound, passwordsDoNotmatch } from '../../commonErrors';
 
 const routes = Router();
 
@@ -30,7 +31,7 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
     // Get the user model from the db
     const dbUser = await User.findById(userIdToUpdate);
     if (!dbUser) {
-      return next(createError('User not found', 404));
+      return next(userNotFound);
     }
 
     // Check if the password has to be updated
@@ -39,7 +40,7 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
     if (newPassword !== '') {
       // Check that both passwords match
       if (newPassword !== confirmPassword) {
-        return next(createError('Passwords do not match', 400));
+        return next(passwordsDoNotmatch);
       }
 
       shouldUpdatePassword = true;

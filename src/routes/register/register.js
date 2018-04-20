@@ -3,6 +3,7 @@ import { validate } from 'express-jsonschema';
 import { User } from '../../models';
 import { user as userSchema } from '../../schema';
 import { createError, hashPassword } from '../../util';
+import { passwordsDoNotmatch } from '../../commonErrors';
 
 const routes = Router();
 
@@ -11,7 +12,7 @@ routes.post('/', validate({ body: userSchema }) ,async (req, res, next) => {
 
   // check if passwords match
   if (password !== confirmPassword) {
-    return next(createError('Passwords do not match.', 400));
+    return next(passwordsDoNotmatch);
   }
 
   // check if user already exists
