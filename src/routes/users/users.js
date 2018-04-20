@@ -99,4 +99,18 @@ routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, ne
   }
 });
 
+routes.delete('/:userId', async (req, res, next) => {
+  const { id: requestingUserId, isAdmin } = req.user;
+  const { userId } = req.params;
+
+  if (!isAdmin && parseInt(userId, 10) !== requestingUserId) {
+    return next(adminOrOwnerOnly);
+  }
+
+  const user = await User.findById(userId);
+  await user.destroy();
+
+  res.json({ message: `Successfully deleted user with id ${userId}` });
+});
+
 export default routes;
