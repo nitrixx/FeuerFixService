@@ -9,6 +9,10 @@ export default {
       type: 'string',
       required: false,
     },
+    isEnabled: {
+      type: 'boolean',
+      required: false,
+    },
     newPassword: {
       type: 'string',
       required: false,
