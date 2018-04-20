@@ -45,27 +45,18 @@ routes.get('/:userId', async (req, res) => {
 });
 
 routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, next) => {
-  const { userId: userIdToUpdate } = req.params;
-  const { id: requestingUserId, isAdmin } = req.user;
   const {
-    username = '',
-    name = '',
-    isEnabled = '',
-    newPassword = '',
-    confirmPassword = '',
-  } = req.body;
+    body: {
+      username = '',
+      name = '',
+      isEnabled = '',
+      newPassword = '',
+      confirmPassword = '',
+    },
+    dbUser,
+  } = req;
 
   try {
-    // Only the admin or the owner can update a user
-    if (!isAdmin && parseInt(userIdToUpdate, 10) !== requestingUserId) {
-      return next(adminOrOwnerOnly);
-    }
-
-    // Get the user model from the db
-    const dbUser = await User.findById(userIdToUpdate);
-    if (!dbUser) {
-      return next(userNotFound);
-    }
 
     // Check if the password has to be updated
     let shouldUpdatePassword = false;
