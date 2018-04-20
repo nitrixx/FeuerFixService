@@ -10,8 +10,8 @@ module.exports = {
     operatorsAliases: Sequelize.Op,
   },
   test: {
-    username: "root",
-    password: "123456",
+    username: "travis",
+    password: null,
     database: "dev",
     host: "127.0.0.1",
     dialect: "mysql",
