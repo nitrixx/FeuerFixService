@@ -120,10 +120,16 @@ describe('DELETE /categories/:categoryId', () => {
   });
 
   it('should return 401 without admin permissions', async () => {
+    // create test entry
+    const testCategory = await createTestCategory('categoryTestDeleteWithoutPerm');
+
     await request(app)
-      .delete('/categories/1')
+      .delete(`/categories/${testCategory.id}`)
       .set('authorization', `bearer ${userToken}`)
       .expect(401);
+
+    // destroy test entry
+    await testCategory.destroy();
   });
 
   it('should delete a category including its questions', async () => {
