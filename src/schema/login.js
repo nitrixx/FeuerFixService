@@ -4,10 +4,12 @@ export default {
     username: {
       type: 'string',
       required: true,
+      minLength: 1,
     },
     password: {
       type: 'string',
       required: true,
+      minLength: 1,
     },
   },
 };
