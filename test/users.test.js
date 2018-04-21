@@ -1,7 +1,6 @@
-import bcrypt from 'bcrypt';
 import request from 'supertest';
 import app from '../src/app.js';
-import { User } from '../src/models';
+import { createTestUser, createTestAdmin, getToken } from './helper.js';
 
 let testAdmin;
 let adminToken = '';
@@ -10,43 +9,15 @@ let testUser;
 let userToken = '';
 
 beforeAll(async () => {
+  const adminUsername = 'userTestAdmin';
+  const adminPassword = '123456';
+  testAdmin = await createTestAdmin(adminUsername, adminPassword);
+  adminToken = await getToken(adminUsername, adminPassword);
 
-  // create password hash
-  const password = await bcrypt.hash('123456', 10);
-
-  // Create admin
-  const admin = await User.create({
-    username: 'testAdmin',
-    name: 'testAdmin',
-    password,
-    isEnabled: true,
-    isAdmin: true,
-  });
-  testAdmin = admin;
-
-  // Create user
-  const user = await User.create({
-    username: 'testUser',
-    name: 'testUser',
-    password,
-    isEnabled: true,
-    isAdmin: false,
-  });
-  testUser = user;
-
-  // login with the admin account
-  const { body: { token } } = await request(app)
-    .post('/login')
-    .send({ username: 'testAdmin', password: '123456' })
-    .expect(200);
-  adminToken = token;
-
-  // login with the user account
-  const { body: { token: secondToken } } = await request(app)
-    .post('/login')
-    .send({ username: 'testUser', password: '123456' })
-    .expect(200);
-  userToken = secondToken;
+  const userUsername = 'userTestUser';
+  const userPassword = '123456';
+  testUser = await createTestUser(userUsername, userPassword);
+  userToken = await getToken(userUsername, userPassword);
 });
 
 describe('GET /users', () => {
@@ -69,7 +40,7 @@ describe('GET /users', () => {
 });
 
 describe('GET /users/:userId', () => {
-  it('should should return 401 without admin permissions', async () => {
+  it('should return 401 without admin permissions', async () => {
     await request(app)
       .get(`/users/${testUser.id}`)
       .expect(401);
