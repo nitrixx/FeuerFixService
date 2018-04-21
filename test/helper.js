@@ -28,6 +28,11 @@ export async function deleteCategoryById(categoryId) {
   await category.destroy();
 }
 
+export async function deleteUserById(userId) {
+  const user = await User.findById(userId);
+  await user.destroy();
+}
+
 export async function doesCategoryExist(categoryId) {
   const category = await Category.findById(categoryId);
   return !!category;
