@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../../models';
 import { createError } from "../../util";
+import { accountNotEnabled } from '../../commonErrors';
 
 const ONEDAY = 24 * 60 * 60
 
@@ -11,6 +12,9 @@ export async function login(username, password) {
   // Check if user exists
   const user = await User.findOne({ where: { username } });
   if (!user) { throw loginFail; }
+
+  // Check if user is enabled
+  if(!user.isEnabled) { throw accountNotEnabled  }
 
   // Check if password is correct
   const isPasswordCorrect = await bcrypt.compare(password, user.password);
