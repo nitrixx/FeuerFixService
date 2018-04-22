@@ -23,7 +23,7 @@ export async function getUserList() {
   return users;
 }
 
-export async function updateUser(userData, dbUser) {
+export async function updateUser(userData, dbUser, isRequestUserAdmin) {
   const {
     username = '',
     name = '',
@@ -52,7 +52,7 @@ export async function updateUser(userData, dbUser) {
   if (name !== '') {
     dbUser.name = name;
   }
-  if (isEnabled !== '') {
+  if (isEnabled !== '' && isRequestUserAdmin) {
     dbUser.isEnabled = isEnabled;
   }
   if (shouldUpdatePassword) {

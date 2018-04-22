@@ -39,10 +39,10 @@ routes.get('/:userId', async (req, res) => {
 });
 
 routes.put('/:userId', validate({ body: userUpdateSchema }), async (req, res, next) => {
-  const { body, dbUser, } = req;
+  const { body, dbUser, user: { isAdmin } } = req;
 
   try {
-    const replyUser = await updateUser(body, dbUser);
+    const replyUser = await updateUser(body, dbUser, isAdmin);
     res.json(replyUser);
   } catch (err) {
     return next(err);
