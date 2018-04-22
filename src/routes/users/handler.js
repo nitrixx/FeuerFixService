@@ -46,32 +46,34 @@ export async function updateUser(userData, dbUser) {
   }
 
   // Update user model
-  const replyObj = {};
   if (username !== '') {
     dbUser.username = username;
-    replyObj.username = username;
   }
   if (name !== '') {
     dbUser.name = name;
-    replyObj.name = name;
   }
   if (isEnabled !== '') {
     dbUser.isEnabled = isEnabled;
-    replyObj.isEnabled = isEnabled;
   }
   if (shouldUpdatePassword) {
     dbUser.password = updatedPassword;
-    replyObj.message = 'You successfully changed your password';
   }
 
   // Save the changes to the db
   await dbUser.save();
 
-  return replyObj;
+  return assembleUserUpdateResponse(dbUser, shouldUpdatePassword);
 }
 
 export async function deleteStatistics(userId) {
   const statistics = AnsweredQuestion.findAll({ where: { UserId: userId } });
   await statistics.map(async statistic => await statistic.destroy());
   return { message: 'Success' };
+}
+
+function assembleUserUpdateResponse(dbUser, passwordUpdated) {
+  const { id, username, name, isEnabled, isAdmin } = dbUser;
+  const response = { id, username, name, isEnabled, isAdmin };
+  if (passwordUpdated) { response.message = 'You successfully changed your password'; }
+  return response;
 }
