@@ -25,6 +25,21 @@ describe('POST /login', () => {
     await testUser.destroy();
   });
 
+  it('should fail if the user is not enabled', async () => {
+    // create test entry
+    const testUsername = 'loginNotEnabledtestuser';
+    const testPassword = 'logintestpassword';
+    const testUser = await createTestUser(testUsername, testPassword, false);
+
+    await request(app)
+      .post('/login')
+      .set({ username: testUsername, password: testPassword })
+      .expect(400);
+
+    // destroy test entry
+    await testUser.destroy();
+  });
+
   it('should return a userId and a token', async () => {
     // create test entry
     const testUsername = 'logintestuser';

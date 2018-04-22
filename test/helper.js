@@ -7,12 +7,12 @@ import {
   Question,
 } from '../src/models';
 
-export async function createTestAdmin(username, password) {
-  return await createUser(true, username, password);
+export async function createTestAdmin(username, password, isEnabled = true) {
+  return await createUser(true, username, password, isEnabled);
 }
 
-export async function createTestUser(username, password) {
-  return await createUser(false, username, password);
+export async function createTestUser(username, password, isEnabled = true) {
+  return await createUser(false, username, password, isEnabled);
 }
 
 export async function createTestCategory(name) {
@@ -51,13 +51,13 @@ export async function getToken(username, password) {
   return token;
 }
 
-async function createUser(isAdmin, username, password) {
+async function createUser(isAdmin, username, password, isEnabled) {
   const passwordHash = await createPasswordHash(password);
   return await User.create({
     username,
     name: username,
     password: passwordHash,
-    isEnabled: true,
+    isEnabled,
     isAdmin,
   });
 }
