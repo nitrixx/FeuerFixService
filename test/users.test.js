@@ -72,6 +72,17 @@ describe('PUT /users/:userId', () => {
       .expect(401);
   });
 
+  it('should not update isEnabled if the owner tries to update it', async () => {
+    const { body: user } = await request(app)
+      .put(`/users/${testUser.id}`)
+      .set('authorization', `bearer ${userToken}`)
+      .send({ isEnabled: !testUser.isEnabled })
+
+    if(user.isEnabled !== testUser.isEnabled) {
+      throw new Error('user can update own isEnabled field');
+    }
+  });
+
   it('should update all fields', async () => {
     const userUpdate = {
       username: 'KeineAhnung2',
