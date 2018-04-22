@@ -1,11 +1,6 @@
 import { User, Answer, AnsweredQuestion } from '../../models';
 import { hashPassword } from '../../util';
-import {
-  userNotFound,
-  passwordsDoNotmatch,
-  forbidden,
-  adminOrOwnerOnly,
-} from '../../commonErrors';
+import { userNotFound, passwordsDoNotmatch } from '../../commonErrors';
 
 export async function prefetchUser(userId) {
   const user = await User.findById(userId, {
