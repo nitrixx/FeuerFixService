@@ -78,9 +78,16 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
       .status(err.status || 500)
       .json({ message: err.message, trace: err.trace });
   } else {
-    res
-      .status(err.status || 500)
-      .json({ message: err.message });
+    if (err.status) {
+      res
+        .status(err.status)
+        .json({ message: err.message });
+    } else {
+      // Unintentional erros will be masked
+      res
+        .status(500)
+        .json({ message: 'Internal Server error' });
+    }
   }
 
 });
