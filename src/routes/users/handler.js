@@ -67,7 +67,8 @@ export async function updateUser(userData, dbUser, isRequestUserAdmin) {
 
 export async function deleteStatistics(userId) {
   const statistics = AnsweredQuestion.findAll({ where: { UserId: userId } });
-  await statistics.map(async statistic => await statistic.destroy());
+  await Promise.all(statistics // eslint-disable-line no-undef
+    .map(async statistic => await statistic.destroy()));
   return { message: 'Success' };
 }
 

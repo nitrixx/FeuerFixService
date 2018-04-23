@@ -26,7 +26,8 @@ export async function prefetchCategory(categoryId) {
 }
 
 export async function deleteCategory(dbCategory) {
-  await dbCategory.Questions.map(async q => await q.destroy());
+  await Promise.all(dbCategory.Questions // eslint-disable-line no-undef
+    .map(async q => await q.destroy()));
   await dbCategory.destroy();
   return { message: 'Success' };
 }
