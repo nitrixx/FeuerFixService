@@ -4,6 +4,7 @@ import login from './login';
 import category from './category';
 import question from './question';
 import answer from './answer';
+import answerUpdate from './answerUpdate';
 import questionQuery from './questionQuery';
 import questionUpdate from './questionUpdate';
 
@@ -14,6 +15,7 @@ export {
   category,
   question,
   answer,
+  answerUpdate,
   questionQuery,
   questionUpdate,
 };
