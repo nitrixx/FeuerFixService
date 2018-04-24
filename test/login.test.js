@@ -40,7 +40,7 @@ describe('POST /login', () => {
     await testUser.destroy();
   });
 
-  it('should return a userId and a token', async () => {
+  it('should return a token', async () => {
     // create test entry
     const testUsername = 'logintestuser';
     const testPassword = 'logintestpassword';
@@ -50,10 +50,6 @@ describe('POST /login', () => {
       .post('/login')
       .send({ username: testUsername, password: testPassword })
       .expect(200);
-
-    if (loginResponse.userId === undefined || loginResponse.userId !== testUser.id) {
-      throw new Error(`got an unexpected userId: ${loginResponse.userId}`);
-    }
 
     if (loginResponse.token === undefined) {
       throw new Error(`token missing from response`);
