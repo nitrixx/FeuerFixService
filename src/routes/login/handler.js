@@ -26,5 +26,5 @@ export async function login(username, password) {
     isAdmin: user.isAdmin,
   }, process.env.JWT_SECRET, { expiresIn: ONEDAY });
 
-  return { userId: user.id, token };
+  return { token };
 }
