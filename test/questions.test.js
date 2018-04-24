@@ -138,9 +138,12 @@ describe('POST /questions', () => {
   });
 
   it('should return 400 with no correct answer', async () => {
+    // create test entry
+    const testCategory = await createTestCategory('questionTestPost');
+
     const body = {
       text: 'This should fail',
-      categoryId: 1,
+      categoryId: testCategory.id,
       answers: [{ text: 'testAnswer', isCorrect: false }],
     };
 
@@ -149,12 +152,18 @@ describe('POST /questions', () => {
       .set('authorization', `bearer ${adminToken}`)
       .send(body)
       .expect(400);
+
+    // delete test entries
+    await testCategory.destroy();
   });
 
   it('should return 400 with more than one correct answer', async () => {
+    // create test entry
+    const testCategory = await createTestCategory('questionTestPost');
+
     const body = {
       text: 'This should fail',
-      categoryId: 1,
+      categoryId: testCategory.id,
       answers: [
         { text: 'testAnswer', isCorrect: true },
         { text: 'testAnswer2', isCorrect: true },
@@ -166,12 +175,18 @@ describe('POST /questions', () => {
       .set('authorization', `bearer ${adminToken}`)
       .send(body)
       .expect(400);
+
+    // delete test entries
+    await testCategory.destroy();
   });
 
   it('should return 400 with identical answer texts', async () => {
+    // create test entry
+    const testCategory = await createTestCategory('questionTestPost');
+
     const body = {
       text: 'This should fail',
-      categoryId: 1,
+      categoryId: testCategory.id,
       answers: [
         { text: 'testAnswer', isCorrect: true },
         { text: 'testAnswer', isCorrect: false },
@@ -183,6 +198,9 @@ describe('POST /questions', () => {
       .set('authorization', `bearer ${adminToken}`)
       .send(body)
       .expect(400);
+
+    // delete test entries
+    await testCategory.destroy();
   });
 
   it('should return 400 if question text already exists', async () => {
@@ -192,7 +210,7 @@ describe('POST /questions', () => {
 
     const body = {
       text: testQuestion.text,
-      categoryId: 1,
+      categoryId: testCategory.id,
       answers: [{ text: 'testAnswer', isCorrect: true }],
     };
 
