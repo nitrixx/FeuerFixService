@@ -52,7 +52,6 @@ routes.put('/:questionId', validate({ body: questionUpdateSchema }, [answerSchem
   } catch (err) { return next(err); }
 });
 
-// this can be extremely costly, writ that into the docs after this
 routes.delete('/:questionId', async (req, res, next) => {
   const { user: { isAdmin }, dbQuestion: { id } } = req;
   if (!isAdmin) { throw forbidden; }
