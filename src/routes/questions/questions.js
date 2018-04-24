@@ -54,7 +54,7 @@ routes.put('/:questionId', validate({ body: questionUpdateSchema }, [answerSchem
 
 routes.delete('/:questionId', async (req, res, next) => {
   const { user: { isAdmin }, dbQuestion: { id } } = req;
-  if (!isAdmin) { throw forbidden; }
+  if (!isAdmin) { return next(forbidden); }
 
   try {
     const response = await deleteQuestion(id);
