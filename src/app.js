@@ -22,6 +22,20 @@ app.use(logger('dev', {
   skip: () => app.get('env') === 'test'
 }));
 
+// Configure CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,authorization');
+
+  // intercept OPTIONS request
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 // Middleware for parsing HTTP payload
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
