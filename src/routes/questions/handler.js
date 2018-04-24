@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import { Question, Answer, Category, AnsweredQuestion } from '../../models';
-import { createError } from '../../util';
+import { createError, containsDuplicates } from '../../util';
 import { questionNotFound, categoryNotFound } from '../../commonErrors';
 
 export async function getQuestions(searchTerm) {
@@ -19,6 +19,11 @@ export async function createQuestion(text, categoryId, answers) {
   const category = await Category.findById(categoryId);
   if (!category) {
     throw categoryNotFound;
+  }
+
+  // Make sure none of the provided answer texts are the same
+  if(containsDuplicates(answers.map(a => a.text))) {
+    throw createError('Your request contains duplicate answer texts', 400);
   }
 
   // Make sure that there is no other question with the same text
