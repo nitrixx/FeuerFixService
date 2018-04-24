@@ -18,6 +18,18 @@ export function checkEnabledFlag(req, res, next) {
   return next();
 }
 
+export function containsDuplicates(array) {
+  const counts = [];
+  for(let i = 0; i <= array.length; i++) {
+      if(counts[array[i]] === undefined) {
+          counts[array[i]] = 1;
+      } else {
+          return true;
+      }
+  }
+  return false;
+}
+
 export async function hashPassword(passwordToHash) {
   return await bCrypt.hash(passwordToHash, 10);
 }
