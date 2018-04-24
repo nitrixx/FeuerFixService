@@ -5,6 +5,8 @@ import {
   User,
   Category,
   Question,
+  Answer,
+  AnsweredQuestion,
 } from '../src/models';
 
 export async function createTestAdmin(username, password, isEnabled = true) {
@@ -19,8 +21,16 @@ export async function createTestCategory(name) {
   return await Category.create({ name });
 }
 
-export async function createTestQuestion(name, CategoryId) {
-  return await Question.create({ name, CategoryId });
+export async function createTestQuestion(text, CategoryId) {
+  return await Question.create({ text, CategoryId });
+}
+
+export async function createTestAnswer(text, isCorrect, QuestionId) {
+  return await Answer.create({ text, isCorrect, QuestionId });
+}
+
+export async function createTestStatistic(AnswerId, UserId) {
+  return await AnsweredQuestion.create({ UserId, AnswerId });
 }
 
 export async function deleteCategoryById(categoryId) {
@@ -33,6 +43,21 @@ export async function deleteUserById(userId) {
   await user.destroy();
 }
 
+export async function deleteQuestionById(questionId) {
+  const question = await Question.findById(questionId);
+  await question.destroy();
+}
+
+export async function deleteAnswerById(answerId) {
+  const answer = await Answer.findById(answerId);
+  await answer.destroy();
+}
+
+export async function isAnswerCorrect(answerId) {
+  const answer = await Answer.findById(answerId);
+  return answer.isCorrect;
+}
+
 export async function doesCategoryExist(categoryId) {
   const category = await Category.findById(categoryId);
   return !!category;
@@ -41,6 +66,16 @@ export async function doesCategoryExist(categoryId) {
 export async function doesQuestionExist(questionId) {
   const question = await Question.findById(questionId);
   return !!question;
+}
+
+export async function doesAnswerExist(answerId) {
+  const answer = await Answer.findById(answerId);
+  return !!answer;
+}
+
+export async function doesStatisticExist(statisticId) {
+  const statistic = await AnsweredQuestion.findById(statisticId);
+  return !!statistic;
 }
 
 export async function getToken(username, password) {
