@@ -30,7 +30,7 @@ beforeAll(async () => {
 });
 
 describe('GET /categories', () => {
-  it('should should return 401 without authorization', async () => {
+  it('should return 401 without authorization', async () => {
     await request(app)
       .get('/categories')
       .expect(401);
@@ -46,7 +46,7 @@ describe('GET /categories', () => {
       .expect(200);
 
     if (categories.length <= 0) {
-      throw new Error('Get /users returned no users');
+      throw new Error('Get /categories returned no categories');
     }
 
     // destroy test entry
