@@ -33,6 +33,11 @@ routes.get('/:categoryId', async (req, res) => {
   res.json({ id, name, questionCount: Questions.length });
 });
 
+routes.get('/:categoryId/questions', async (req, res) => {
+  const { category: { Questions: questions } } = req;
+  res.json({questions});
+});
+
 routes.post('/', validate({ body: categorySchema }), async (req, res, next) => {
   const { body: { name }, user: { isAdmin } } = req;
   if (!isAdmin) { return next(forbidden); }

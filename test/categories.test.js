@@ -9,6 +9,7 @@ import {
   deleteCategoryById,
   doesCategoryExist,
   doesQuestionExist,
+  createTestAnswer,
 } from './helper.js';
 
 let testAdmin;
@@ -108,6 +109,33 @@ describe('GET /categories/:categoryId', () => {
     }
 
     // destroy test entry
+    await testCategory.destroy();
+  });
+});
+
+describe('GET /categories/:categoryId/questions', () => {
+  it('should return a list of questions', async () => {
+    // create test entries
+    const testCategory = await createTestCategory('categoryTestGetQuestions');
+    const testQuestion = await createTestQuestion('categoryTestGetQuestions', testCategory.id);
+    const testAnswer = await createTestAnswer('categoryTestGetQuestions', true, testQuestion.id);
+
+    const { body: { questions } } = await request(app)
+      .get(`/categories/${testCategory.id}/questions`)
+      .set('authorization', `bearer ${userToken}`)
+      .expect(200);
+
+    if (!questions || questions.length <= 0) {
+      throw new Error('did not return questions');
+    }
+
+    if (!questions[0].Answers || questions[0].Answers.length <= 0) {
+      throw new Error('did not return answers of questions')
+    }
+
+    // delete test entries
+    await testAnswer.destroy();
+    await testQuestion.destroy();
     await testCategory.destroy();
   });
 });

@@ -1,4 +1,4 @@
-import { Category, Question } from "../../models";
+import { Category, Question, Answer } from "../../models";
 import { createError } from "../../util";
 import { categoryNotFound } from "../../commonErrors";
 
@@ -19,7 +19,7 @@ export async function createCategory(name) {
 export async function prefetchCategory(categoryId) {
   const category = await Category.findById(categoryId, {
     attributes: ['id', 'name'],
-    include: [Question],
+    include: [{ model: Question, include: [Answer] }],
   });
   if (!category) { throw categoryNotFound; }
   return category;
