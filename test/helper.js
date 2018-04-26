@@ -53,6 +53,11 @@ export async function deleteAnswerById(answerId) {
   await answer.destroy();
 }
 
+export async function deleteStatisticById(AnswerId, UserId) {
+  const statistic = await AnsweredQuestion.findOne({ where: { AnswerId, UserId } });
+  await statistic.destroy();
+}
+
 export async function isAnswerCorrect(answerId) {
   const answer = await Answer.findById(answerId);
   return answer.isCorrect;
