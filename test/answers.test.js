@@ -1,6 +1,17 @@
 import request from 'supertest';
 import app from '../src/app.js';
-import { createTestAnswer, createTestAdmin, getToken, createTestUser, createTestQuestion, isAnswerCorrect, createTestStatistic, doesStatisticExist, doesAnswerExist } from './helper.js';
+import {
+  createTestAnswer,
+  createTestAdmin,
+  getToken,
+  createTestUser,
+  createTestQuestion,
+  isAnswerCorrect,
+  createTestStatistic,
+  doesStatisticExist,
+  doesAnswerExist,
+  deleteStatisticById,
+} from './helper.js';
 
 let testAdmin;
 let adminToken = '';
@@ -62,7 +73,7 @@ describe('PUT /answers/:answerId', () => {
       .send({ questionId: testQuestion2.id })
       .expect(200);
 
-    if(!QuestionId || QuestionId !== testQuestion2.id) {
+    if (!QuestionId || QuestionId !== testQuestion2.id) {
       throw new Error('Associated question has not been updated');
     }
 
@@ -137,18 +148,87 @@ describe('DELETE /answers/:answerId', () => {
       .expect(200);
 
     const statisticStillExists = await doesStatisticExist(testStatistic.id);
-    if(statisticStillExists) {
+    if (statisticStillExists) {
       throw new Error('statistics have not been deleted');
     }
 
     const answerStillExists = await doesAnswerExist(testAnswer.id);
-    if(answerStillExists) {
+    if (answerStillExists) {
       throw new Error('answer has not been deleted');
     }
 
     // destroy test entry
     await testStatistic.destroy();
     await testAnswer.destroy();
+  });
+});
+
+describe('POST /answers/:answerId', () => {
+  it('should return 404 if the answer is not found', async () => {
+    await request(app)
+      .post('/answers/-1')
+      .set('authorization', `bearer ${userToken}`)
+      .expect(404);
+  });
+
+  it('should increment the correct count', async () => {
+    // create test entries
+    const testQuestion = await createTestQuestion('answerTestAnswerQuestion');
+    const testAnswer = await createTestAnswer('answerTestAnswerQuestion', true, testQuestion.id);
+
+    const { body: statistic } = await request(app)
+      .post(`/answers/${testAnswer.id}`)
+      .set('authorization', `bearer ${userToken}`)
+      .expect(200);
+
+    if (statistic.correctCount === undefined || statistic.correctCount !== 1) {
+      throw new Error('The answer did not count towards the correct answers');
+    }
+
+    // delete test entries
+    await deleteStatisticById(testAnswer.id, testUser.id);
+    await testAnswer.destroy();
+    await testQuestion.destroy();
+  });
+
+  it('should increment the wrong count', async () => {
+    // create test entries
+    const testQuestion = await createTestQuestion('answerTestAnswerQuestion');
+    const testAnswer = await createTestAnswer('answerTestAnswerQuestion', false, testQuestion.id);
+
+    const { body: statistic } = await request(app)
+      .post(`/answers/${testAnswer.id}`)
+      .set('authorization', `bearer ${userToken}`)
+      .expect(200);
+
+    if (statistic.wrongCount === undefined || statistic.wrongCount !== 1) {
+      throw new Error('The answer did not count towards the wrong answers');
+    }
+
+    // delete test entries
+    await deleteStatisticById(testAnswer.id, testUser.id);
+    await testAnswer.destroy();
+    await testQuestion.destroy();
+  });
+
+  it('should return the correct question id', async () => {
+    // create test entries
+    const testQuestion = await createTestQuestion('answerTestAnswerQuestion');
+    const testAnswer = await createTestAnswer('answerTestAnswerQuestion', false, testQuestion.id);
+
+    const { body: statistic } = await request(app)
+      .post(`/answers/${testAnswer.id}`)
+      .set('authorization', `bearer ${userToken}`)
+      .expect(200);
+
+    if (statistic.questionId === undefined || statistic.questionId !== testQuestion.id) {
+      throw new Error('The returned question id was not correct');
+    }
+
+    // delete test entries
+    await deleteStatisticById(testAnswer.id, testUser.id);
+    await testAnswer.destroy();
+    await testQuestion.destroy();
   });
 });
 
