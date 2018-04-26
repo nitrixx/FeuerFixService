@@ -19,9 +19,6 @@ routes.param('categoryId', async (req, res, next, categoryId) => {
 });
 
 routes.get('/', async (req, res, next) => {
-  const { isAdmin } = req.user;
-  if (!isAdmin) { return next(forbidden); }
-
   try {
     const categories = await getCategories();
     res.json({ categories });
