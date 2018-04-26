@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { validate } from 'express-jsonschema';
 import { forbidden } from '../../commonErrors';
 import { answerUpdate as answerSchema } from '../../schema';
-import { prefetchAnswer, updateAnswer, deleteAnswer } from './handler';
+import { prefetchAnswer, updateAnswer, deleteAnswer, answerQuestion } from './handler';
 
 const routes = Router();
 
@@ -23,6 +23,15 @@ routes.put('/:answerId', validate({ body: answerSchema }), async (req, res, next
 
   try {
     const response = await updateAnswer(answer, text, isCorrect, questionId);
+    res.json(response);
+  } catch (err) { return next(err); }
+});
+
+routes.post('/:answerId', async (req, res, next) => {
+  const { user: { id }, answer } = req;
+
+  try {
+    const response = await answerQuestion(answer, id);
     res.json(response);
   } catch (err) { return next(err); }
 });

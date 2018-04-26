@@ -64,3 +64,49 @@ export async function deleteAnswer(dbAnswer) {
 
   return { message: `Successfully deleted answer ${dbAnswer.id} including ${answeredQuestions.length} statistic(s).` };
 }
+
+export async function answerQuestion(dbAnswer, UserId) {
+  // Create a new statistics entry
+  await AnsweredQuestion.create({ UserId, AnswerId: dbAnswer.id });
+
+  // Get the corresponding question
+  const { id: questionId, Answers: answers } = await Question.findById(dbAnswer.QuestionId, { include: [Answer] });
+
+  // Get all answers for this question from this user
+  const query = {
+    where: {
+      UserId,
+      [Op.or]: answers.map(({ id }) => ({ AnswerId: id })),
+    }
+  };
+  const answeredQuestions = await AnsweredQuestion.findAll(query);
+
+  // Count right and wrong answers
+  const { correctCount, wrongCount } = answeredQuestions.reduce((current, { AnswerId }) => {
+    // Find the corresponding answer from the prefetched array
+    const { isCorrect } = findAnswerInArray(AnswerId, answers);
+
+    // add the value to current
+    isCorrect ? current.correctCount += 1 : current.wrongCount += 1;
+    return current;
+  }, { correctCount: 0, wrongCount: 0 });
+
+  // Assemble statistics
+  const statistics = {
+    userId: UserId,
+    questionId,
+    correctCount,
+    wrongCount,
+    totalCount: correctCount + wrongCount,
+  };
+  return statistics;
+}
+
+// This method assumes the answerId is present in the array!
+function findAnswerInArray(answerId, answers) {
+  for (let i = 0; i < answers.length; i++) {
+    const currentAnswer = answers[i];
+    if (currentAnswer.id === answerId) return currentAnswer;
+  }
+  return undefined;
+}
