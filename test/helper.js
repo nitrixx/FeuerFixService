@@ -54,8 +54,8 @@ export async function deleteAnswerById(answerId) {
 }
 
 export async function deleteStatisticById(AnswerId, UserId) {
-  const statistic = await AnsweredQuestion.findOne({ where: { AnswerId, UserId } });
-  await statistic.destroy();
+  const statistics = await AnsweredQuestion.findAll({ where: { AnswerId, UserId } });
+  await Promise.all(statistics.map(async statistic => await statistic.destroy())); // eslint-disable-line no-undef
 }
 
 export async function isAnswerCorrect(answerId) {

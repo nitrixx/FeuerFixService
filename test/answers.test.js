@@ -20,12 +20,12 @@ let testUser;
 let userToken = '';
 
 beforeAll(async () => {
-  const adminUsername = 'categoryTestAdmin';
+  const adminUsername = 'answerTestAdmin';
   const adminPassword = '123456';
   testAdmin = await createTestAdmin(adminUsername, adminPassword);
   adminToken = await getToken(adminUsername, adminPassword);
 
-  const userUsername = 'categoryTestUser';
+  const userUsername = 'answerTestUser';
   const userPassword = '123456';
   testUser = await createTestUser(userUsername, userPassword);
   userToken = await getToken(userUsername, userPassword);
@@ -185,6 +185,10 @@ describe('POST /answers/:answerId', () => {
       throw new Error('The answer did not count towards the correct answers');
     }
 
+    if (statistic.userId === undefined || statistic.userId !== testUser.id) {
+      throw new Error('The answer was not associated with the correct user');
+    }
+
     // delete test entries
     await deleteStatisticById(testAnswer.id, testUser.id);
     await testAnswer.destroy();
@@ -205,6 +209,10 @@ describe('POST /answers/:answerId', () => {
       throw new Error('The answer did not count towards the wrong answers');
     }
 
+    if (statistic.userId === undefined || statistic.userId !== testUser.id) {
+      throw new Error('The answer was not associated with the correct user');
+    }
+
     // delete test entries
     await deleteStatisticById(testAnswer.id, testUser.id);
     await testAnswer.destroy();
@@ -223,6 +231,10 @@ describe('POST /answers/:answerId', () => {
 
     if (statistic.questionId === undefined || statistic.questionId !== testQuestion.id) {
       throw new Error('The returned question id was not correct');
+    }
+
+    if (statistic.userId === undefined || statistic.userId !== testUser.id) {
+      throw new Error('The answer was not associated with the correct user');
     }
 
     // delete test entries
