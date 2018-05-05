@@ -12,10 +12,10 @@
   "scripts": {
     "prestart": "npm run -s build && npm run migrate",
     "start": "node dist/index.js",
-    "dev": "npm run migrate && nodemon src/index.js --exec \"node -r dotenv/config -r babel-register\"",
+    "dev": "export NODE_ENV=development && npm run migrate && nodemon src/index.js --exec \"node -r dotenv/config -r babel-register\"",
     "clean": "rimraf dist",
     "build": "npm run clean && mkdir -p dist && babel src -s -D -d dist --source-maps",
-    "test": "export JWT_SECRET=123456 && npm run migrate && jest --forceExit",
+    "test": "export NODE_ENV=test && export JWT_SECRET=123456 && npm run migrate && jest --forceExit",
     "testDev": "export JWT_SECRET=123456 && jest --watch",
     "migrate": "sequelize --config src/config/config.js --migrations-path src/migrations --models-path src/models db:migrate",
     "lint": "esw -w src test"
