@@ -2,10 +2,6 @@ import request from 'supertest';
 import app from '../src/app.js';
 import { createTestUser, deleteUserById } from './helper';
 
-// beforeAll(async () => {
-
-// });
-
 describe('POST /register', () => {
   it('should return 400 without a payload', async () => {
     await request(app)

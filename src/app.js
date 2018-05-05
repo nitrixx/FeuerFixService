@@ -13,6 +13,7 @@ import answers from './routes/answers';
 import users from './routes/users';
 import register from './routes/register';
 import login from './routes/login';
+import statistics from './routes/statistics';
 
 const app = express();
 app.disable('x-powered-by');
@@ -61,6 +62,7 @@ app.use('/answers', answers);
 app.use('/users', users);
 app.use('/register', register);
 app.use('/login', login);
+app.use('/statistics', statistics);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
