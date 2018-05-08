@@ -88,6 +88,7 @@ describe('PUT /users/:userId', () => {
       username: 'KeineAhnung2',
       name: 'Nico2',
       isEnabled: false,
+      isAdmin: true,
     };
 
     const { body: updateResponse } = await request(app)
@@ -106,6 +107,10 @@ describe('PUT /users/:userId', () => {
 
     if (userUpdate.isEnabled !== updateResponse.isEnabled) {
       throw new Error('isEnabled did not match');
+    }
+
+    if (userUpdate.isAdmin !== updateResponse.isAdmin) {
+      throw new Error('isAdmin did not match');
     }
   });
 

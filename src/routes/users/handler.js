@@ -27,9 +27,10 @@ export async function updateUser(userData, dbUser, isRequestUserAdmin) {
   const {
     username = '',
     name = '',
-    isEnabled = '',
     newPassword = '',
     confirmPassword = '',
+    isEnabled,
+    isAdmin,
   } = userData;
 
   // Check if the password has to be updated
@@ -52,8 +53,11 @@ export async function updateUser(userData, dbUser, isRequestUserAdmin) {
   if (name !== '') {
     dbUser.name = name;
   }
-  if (isEnabled !== '' && isRequestUserAdmin) {
+  if (isEnabled !== undefined && isRequestUserAdmin) {
     dbUser.isEnabled = isEnabled;
+  }
+  if (isAdmin !== undefined && isRequestUserAdmin) {
+    dbUser.isAdmin = isAdmin;
   }
   if (shouldUpdatePassword) {
     dbUser.password = updatedPassword;
