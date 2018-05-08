@@ -7,6 +7,7 @@ import answer from './answer';
 import answerUpdate from './answerUpdate';
 import questionQuery from './questionQuery';
 import questionUpdate from './questionUpdate';
+import createReport from './createReport';
 
 export {
   user,
@@ -18,4 +19,5 @@ export {
   answerUpdate,
   questionQuery,
   questionUpdate,
+  createReport,
 };
