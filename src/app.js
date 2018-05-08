@@ -14,6 +14,7 @@ import users from './routes/users';
 import register from './routes/register';
 import login from './routes/login';
 import statistics from './routes/statistics';
+import reports from './routes/reports';
 
 const app = express();
 app.disable('x-powered-by');
@@ -63,6 +64,7 @@ app.use('/users', users);
 app.use('/register', register);
 app.use('/login', login);
 app.use('/statistics', statistics);
+app.use('/reports', reports);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
