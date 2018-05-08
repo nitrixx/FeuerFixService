@@ -14,7 +14,10 @@ export default {
     isEnabled: {
       type: 'boolean',
       required: false,
-      minLength: 1,
+    },
+    isAdmin: {
+      type: 'boolean',
+      required: false,
     },
     newPassword: {
       type: 'string',

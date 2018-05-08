@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { Question, Answer, Category, AnsweredQuestion } from '../../models';
+import { Question, Answer, Category, AnsweredQuestion, Report } from '../../models';
 import { createError, containsDuplicates } from '../../util';
 import { questionNotFound, categoryNotFound } from '../../commonErrors';
 
@@ -22,7 +22,7 @@ export async function createQuestion(text, categoryId, answers) {
   }
 
   // Make sure none of the provided answer texts are the same
-  if(containsDuplicates(answers.map(a => a.text))) {
+  if (containsDuplicates(answers.map(a => a.text))) {
     throw createError('Your request contains duplicate answer texts', 400);
   }
 
@@ -128,8 +128,8 @@ export async function updateQuestion(question, text, categoryId, answers = []) {
 }
 
 export async function deleteQuestion(questionId) {
-  // We need to fetch the answeredQuestions as well
-  const question = await Question.findById(questionId, { include: [Answer] });
+  // We need to fetch the answeredQuestions and reports as well
+  const question = await Question.findById(questionId, { include: [Answer, Report] });
 
   // delete answers
   await Promise.all(question.Answers // eslint-disable-line no-undef
@@ -143,7 +143,16 @@ export async function deleteQuestion(questionId) {
       await answer.destroy();
     }));
 
+  // delete reports
+  await Promise.all(question.Reports // eslint-disable-line no-undef
+    .map(async report => await report.destroy()));
+
   await question.destroy();
   const msg = `Successfully deleted question ${question.id} and ${question.Answers.length} anwers`;
   return { message: msg };
+}
+
+export async function createReport(QuestionId, message) {
+  await Report.create({ message, QuestionId });
+  return { message: 'Success.' };
 }

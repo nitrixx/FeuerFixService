@@ -1,6 +1,24 @@
 import request from 'supertest';
 import app from '../src/app.js';
-import { createTestAdmin, getToken, createTestUser, createTestQuestion, createTestCategory, deleteQuestionById, deleteAnswerById, createTestAnswer, isAnswerCorrect, doesQuestionExist, createTestStatistic, doesAnswerExist, doesStatisticExist } from './helper.js';
+import {
+  createTestAdmin,
+  getToken,
+  createTestUser,
+  createTestQuestion,
+  createTestCategory,
+  deleteQuestionById,
+  deleteAnswerById,
+  createTestAnswer,
+  isAnswerCorrect,
+  doesQuestionExist,
+  createTestStatistic,
+  doesAnswerExist,
+  doesStatisticExist,
+  createTestReport,
+  doesReportExist,
+  doesQuestionHaveReports,
+  deleteReportsOfQuestion,
+} from './helper.js';
 
 let testAdmin;
 let adminToken = '';
@@ -9,12 +27,12 @@ let testUser;
 let userToken = '';
 
 beforeAll(async () => {
-  const adminUsername = 'categoryTestAdmin';
+  const adminUsername = 'questionTestAdmin';
   const adminPassword = '123456';
   testAdmin = await createTestAdmin(adminUsername, adminPassword);
   adminToken = await getToken(adminUsername, adminPassword);
 
-  const userUsername = 'categoryTestUser';
+  const userUsername = 'questionTestUser';
   const userPassword = '123456';
   testUser = await createTestUser(userUsername, userPassword);
   userToken = await getToken(userUsername, userPassword);
@@ -387,11 +405,17 @@ describe('DELETE /questions/:questionId', () => {
     const testQuestion = await createTestQuestion('questionTestDelete', testCategory.id);
     const testAnswer = await createTestAnswer('questionTestDelete', true, testQuestion.id);
     const testStatistic = await createTestStatistic(testAnswer.id, testUser.id);
+    const testReport = await createTestReport(testQuestion.id, 'questionTestDeleteReport');
 
     await request(app)
       .delete(`/questions/${testQuestion.id}`)
       .set('authorization', `bearer ${adminToken}`)
       .expect(200);
+
+    const reportStillExists = await doesReportExist(testReport.id);
+    if (reportStillExists) {
+      throw new Error('report was not deleted');
+    }
 
     const statisticStillExists = await doesStatisticExist(testStatistic.id);
     if (statisticStillExists) {
@@ -414,7 +438,28 @@ describe('DELETE /questions/:questionId', () => {
     await testQuestion.destroy();
     await testCategory.destroy();
   });
-})
+});
+
+describe('POST /questions/:questionId/reports', () => {
+  it('should create a report', async () => {
+    // create test entries
+    const testQuestion = await createTestQuestion('questionTestCreateReportQuestion');
+
+    await request(app)
+      .post(`/questions/${testQuestion.id}/reports`)
+      .set('authorization', `bearer ${userToken}`)
+      .send({ message: 'questionTestCreateReport' });
+
+    const reportCreated = await doesQuestionHaveReports(testQuestion.id);
+    if (!reportCreated) {
+      throw new Error('report was not created');
+    }
+
+    // delete test entries
+    await deleteReportsOfQuestion(testQuestion.id);
+    await testQuestion.destroy();
+  });
+});
 
 afterAll(async () => {
   await testAdmin.destroy();

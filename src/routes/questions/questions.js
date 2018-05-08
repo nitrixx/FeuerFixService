@@ -1,12 +1,19 @@
 import { Router } from 'express';
 import { validate } from 'express-jsonschema';
 import { forbidden } from '../../commonErrors';
-import { getQuestions, createQuestion, prefetchQuestion, updateQuestion, deleteQuestion } from './handler';
+import { getQuestions,
+  createQuestion,
+  prefetchQuestion,
+  updateQuestion,
+  deleteQuestion,
+  createReport,
+} from './handler';
 import {
   questionQuery,
   question as questionSchema,
   questionUpdate as questionUpdateSchema,
   answer as answerSchema,
+  createReport as createReportSchema,
 } from '../../schema';
 
 const routes = Router();
@@ -42,6 +49,15 @@ routes.post('/', validate({ body: questionSchema }, [answerSchema]), async (req,
   } catch (err) { return next(err); }
 });
 
+routes.post('/:questionId/reports', validate({ body: createReportSchema }), async (req, res, next) => {
+  const { dbQuestion: { id }, body: { message } } = req;
+
+  try {
+    const response = await createReport(id, message);
+    res.json(response);
+  } catch (err) { return next(err); }
+});
+
 routes.put('/:questionId', validate({ body: questionUpdateSchema }, [answerSchema]), async (req, res, next) => {
   const { body: { text, categoryId, answers }, user: { isAdmin }, dbQuestion } = req;
   if (!isAdmin) { return next(forbidden); }
@@ -59,7 +75,7 @@ routes.delete('/:questionId', async (req, res, next) => {
   try {
     const response = await deleteQuestion(id);
     res.json(response);
-  } catch (err) { return next (err); }
+  } catch (err) { return next(err); }
 });
 
 export default routes;
