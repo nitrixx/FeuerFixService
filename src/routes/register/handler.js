@@ -1,14 +1,8 @@
 import { User } from '../../models';
-import { passwordsDoNotmatch } from "../../commonErrors";
 import { createError, hashPassword } from "../../util";
 
 export async function createUser(userData) {
-  const { username, name, password, confirmPassword } = userData;
-
-  // check if passwords match
-  if (password !== confirmPassword) {
-    throw passwordsDoNotmatch;
-  }
+  const { username, name, password } = userData;
 
   // check if user already exists
   const dbUser = await User.find({ where: { username } });

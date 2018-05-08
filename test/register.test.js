@@ -9,18 +9,6 @@ describe('POST /register', () => {
       .expect(400);
   });
 
-  it('should return 400 if passwords do not match', async () => {
-    await request(app)
-      .post('/register')
-      .send({
-        username: 'testRegister',
-        name: 'testRegister',
-        password: '123456',
-        confirmPassword: 'thisisatypo',
-      })
-      .expect(400);
-  });
-
   it('should return 400 if user already exists', async () => {
     // create test entry
     const testUsername = 'testRegister'
