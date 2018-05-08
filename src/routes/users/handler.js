@@ -1,6 +1,6 @@
 import { User, Answer, AnsweredQuestion } from '../../models';
 import { hashPassword } from '../../util';
-import { userNotFound, passwordsDoNotmatch } from '../../commonErrors';
+import { userNotFound } from '../../commonErrors';
 
 export async function prefetchUser(userId) {
   const user = await User.findById(userId, {
@@ -27,8 +27,7 @@ export async function updateUser(userData, dbUser, isRequestUserAdmin) {
   const {
     username = '',
     name = '',
-    newPassword = '',
-    confirmPassword = '',
+    password = '',
     isEnabled,
     isAdmin,
   } = userData;
@@ -36,14 +35,9 @@ export async function updateUser(userData, dbUser, isRequestUserAdmin) {
   // Check if the password has to be updated
   let shouldUpdatePassword = false;
   let updatedPassword = '';
-  if (newPassword !== '') {
-    // Check that both passwords match
-    if (newPassword !== confirmPassword) {
-      throw passwordsDoNotmatch;
-    }
-
+  if (password !== '') {
     shouldUpdatePassword = true;
-    updatedPassword = await hashPassword(newPassword);
+    updatedPassword = await hashPassword(password);
   }
 
   // Update user model

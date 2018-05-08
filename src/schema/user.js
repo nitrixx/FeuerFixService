@@ -16,10 +16,5 @@ export default {
       required: true,
       minLength: 1,
     },
-    confirmPassword: {
-      type: 'string',
-      required: true,
-      minLength: 1,
-    }
   },
 };

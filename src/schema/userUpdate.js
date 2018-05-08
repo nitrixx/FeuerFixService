@@ -19,12 +19,7 @@ export default {
       type: 'boolean',
       required: false,
     },
-    newPassword: {
-      type: 'string',
-      required: false,
-      minLength: 1,
-    },
-    confirmPassword: {
+    password: {
       type: 'string',
       required: false,
       minLength: 1,
