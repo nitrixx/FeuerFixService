@@ -17,6 +17,7 @@
     "build": "npm run clean && mkdir -p dist && babel src -s -D -d dist --source-maps",
     "test": "export NODE_ENV=test && export JWT_SECRET=123456 && npm run migrate && jest --forceExit",
     "testDev": "export JWT_SECRET=123456 && jest --watch",
+    "testCoverage": "export NODE_ENV=test && export JWT_SECRET=123456 && npm run migrate && jest --coverage --forceExit",
     "migrate": "sequelize --config src/config/config.js --migrations-path src/migrations --models-path src/models db:migrate",
     "lint": "esw -w src test"
   },
