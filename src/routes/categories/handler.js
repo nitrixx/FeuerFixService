@@ -38,3 +38,14 @@ export async function deleteCategory(dbCategory) {
   await dbCategory.destroy();
   return { message: 'Success' };
 }
+
+export async function updateCategory(dbCategory, name) {
+  const category = await Category.findOne({ where: { name } });
+  if (category) {
+    throw createError(`Category with name ${name} already exists`, 400);
+  }
+
+  dbCategory.name = name;
+  await dbCategory.save();
+  return dbCategory;
+}
