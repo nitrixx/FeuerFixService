@@ -189,6 +189,37 @@ describe('DELETE /categories/:categoryId', () => {
   });
 });
 
+describe('PUT /categories/:categoryId', () => {
+  it('should return 401 without admin permission', async () => {
+    const testCategory = await createTestCategory('categoryTestPutCategory');
+
+    await request(app)
+      .put(`/categories/${testCategory.id}`)
+      .set('authorization', `bearer ${userToken}`)
+      .send({ name: 'something' })
+      .expect(401);
+
+    await testCategory.destroy();
+  });
+
+  it('should update a category name', async () => {
+    const testCategory = await createTestCategory('categoryTestPutCategory');
+    const newName = 'newCategoryNamePutCategory';
+
+    const { body: { name } } = await request(app)
+      .put(`/categories/${testCategory.id}`)
+      .set('authorization', `bearer ${adminToken}`)
+      .send({ name: newName })
+      .expect(200);
+
+    if (newName !== name) {
+      throw new Error('Name was not updated');
+    }
+
+    await testCategory.destroy();
+  });
+});
+
 afterAll(async () => {
   await testAdmin.destroy();
   await testUser.destroy();

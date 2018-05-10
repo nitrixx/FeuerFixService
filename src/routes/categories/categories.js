@@ -7,6 +7,7 @@ import {
   createCategory,
   prefetchCategory,
   deleteCategory,
+  updateCategory,
 } from './handler';
 
 const routes = Router();
@@ -51,6 +52,16 @@ routes.delete('/:categoryId', async (req, res, next) => {
 
   try {
     const response = await deleteCategory(category);
+    res.json(response);
+  } catch (err) { return next(err); }
+});
+
+routes.put('/:categoryId', validate({ body: categorySchema }), async (req, res, next) => {
+  const { category, user: { isAdmin }, body: { name } } = req;
+  if (!isAdmin) { return next(forbidden); }
+
+  try {
+    const response = await updateCategory(category, name);
     res.json(response);
   } catch (err) { return next(err); }
 });

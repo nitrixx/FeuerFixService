@@ -32,7 +32,7 @@ let testAnsweredQuestion5;
 let testAnsweredQuestion6;
 
 beforeAll(async () => {
-  const userUsername = 'questionTestUser';
+  const userUsername = 'statisticTestUser';
   const userPassword = '123456';
   testUser = await createTestUser(userUsername, userPassword);
   userToken = await getToken(userUsername, userPassword);
