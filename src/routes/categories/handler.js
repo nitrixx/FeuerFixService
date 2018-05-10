@@ -3,9 +3,16 @@ import { createError } from "../../util";
 import { categoryNotFound } from "../../commonErrors";
 
 export async function getCategories() {
-  return await Category.findAll({
-    attributes: ['id', 'name']
+  const categories = await Category.findAll({
+    attributes: ['id', 'name'],
+    include: [Question],
   });
+
+  return categories.map(c => ({
+    id: c.id,
+    name: c.name,
+    questionCount: c.Questions.length,
+  }))
 }
 
 export async function createCategory(name) {
